@@ -1,0 +1,29 @@
+name: Build and Deploy to Docs
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: Install and Build 🔧
+        run: |
+          npm install
+          npm run build
+          # Ensure .nojekyll exists so GitHub doesn't ignore files starting with _
+          touch docs/.nojekyll
+
+      - name: Commit Build Artifacts 🚀
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Build: Update docs folder for GitHub Pages"
+          file_pattern: 'docs'
